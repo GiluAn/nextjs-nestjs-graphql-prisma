@@ -1,16 +1,23 @@
 import { Layout } from '@components/common';
-import tw from 'tailwind-styled-components';
+import styled from 'styled-components';
+import tw from 'twin.macro';
 
-const Title = tw.h1`
-  flex 
-  justify-center 
-  text-red-300
-  text-xl
+// import tw from 'tailwind-styled-components';
+
+// const Title = tw.h1`
+//   flex
+//   justify-center
+//   text-red-300
+//   text-xl
+// `;
+const Title = styled.h1`
+  ${tw`flex justify-center text-red-300 text-xl`}
 `;
 export default function Home() {
   return (
     <Layout>
-      <Title>Hello World!</Title>
+      {' '}
+      <Title>Hello World!</Title>{' '}
     </Layout>
   );
 }
