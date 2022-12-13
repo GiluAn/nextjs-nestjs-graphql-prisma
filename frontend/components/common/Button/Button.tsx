@@ -1,9 +1,18 @@
+import { ButtonColorType } from 'styles/palette';
+import { ButtonWrapper } from './Button.style';
+
 interface ButtonProps {
-  width?: number;
+  onClick: () => void;
+  children: any;
+  color?: ButtonColorType;
 }
 
-const Button = ({ width }: ButtonProps) => {
-  return <button></button>;
+const IconButton = ({ onClick, children, color = 'primary' }: ButtonProps) => {
+  return (
+    <ButtonWrapper color={color} onClick={onClick}>
+      {children}
+    </ButtonWrapper>
+  );
 };
 
-export default Button;
+export default IconButton;
