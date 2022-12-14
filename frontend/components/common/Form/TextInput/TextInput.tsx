@@ -1,19 +1,21 @@
-import { generateUUID } from 'utils/common.fn';
+import { generateUUID } from 'lib/common.fn';
 import { Input, InputWrapper, Label } from './Textinput.style';
 
 interface TextInputProps {
   className?: string;
+  name?: string;
   type?: string;
   label?: string;
+  onChange?: React.ChangeEventHandler;
 }
 
-const TextInput = ({ label, type = 'text', className }: TextInputProps) => {
+const TextInput = ({ label, type = 'text', className, name, onChange }: TextInputProps) => {
   const id = generateUUID();
 
   return (
-    <InputWrapper>
+    <InputWrapper className={className}>
       <Label htmlFor={id}>{label}</Label>
-      <Input id={id} type={type} />
+      <Input type={type} id={id} name={name} onChange={onChange} autoComplete="off" />
     </InputWrapper>
   );
 };

@@ -4,9 +4,6 @@ const withTwin = require('./withTwin.js');
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  compiler: {
-    styledComponents: true,
-  },
 };
 
 module.exports = withTwin(nextConfig);

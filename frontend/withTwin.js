@@ -29,7 +29,7 @@ module.exports = function withTwin(nextConfig) {
                 require.resolve('babel-plugin-macros'),
                 [
                   require.resolve('babel-plugin-styled-components'),
-                  { ssr: true, displayName: true },
+                  { ssr: true, displayName: true, fileName: true, pure: true },
                 ],
               ],
             },

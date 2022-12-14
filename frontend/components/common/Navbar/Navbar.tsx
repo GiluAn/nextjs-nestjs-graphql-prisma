@@ -1,7 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import Button from '@components/common/Button';
 
-const Navbar = () => {
+interface NavbarProps {
+  openLoginModal: () => void;
+}
+
+const Navbar = ({ openLoginModal }: NavbarProps) => {
   return (
     <nav className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900">
       <div className="container flex flex-wrap items-center justify-between mx-auto">
@@ -12,7 +17,8 @@ const Navbar = () => {
           </span>
         </Link>
         <div className="flex items-center md:order-2">
-          <button
+          <Button onClick={openLoginModal}>로그인</Button>
+          {/* <button
             type="button"
             className="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
             id="user-menu-button"
@@ -24,7 +30,7 @@ const Navbar = () => {
             <div className="w-8 h-8 flex rounded-full bg-purple-400 content-center items-center justify-center">
               <div>U</div>
             </div>
-          </button>
+          </button> */}
           {/* Dropdown menu */}
           <div
             className="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"

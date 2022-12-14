@@ -10,8 +10,5 @@ export const ButtonWrapper = styled.button<{
   &:hover {
     background: ${(props) => buttonColors[props.color].hover};
   }
-  &:focus {
-    background: ${(props) => buttonColors[props.color].focus};
-  }
-  ${tw`  focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none`}
+  ${tw`focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 focus:outline-none`}
 `;
