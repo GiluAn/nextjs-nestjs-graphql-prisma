@@ -1,11 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import { AuthService } from 'src/auth/auth.service';
+import { CreateUserInput, SignInInput, UpdateUserInput } from 'src/graphql.schema';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
+
+  findUser(userId: string) {
+    return this.prisma.user.findFirst({
+      where: { userId: userId },
+    });
+  }
+
   create(createUserInput: CreateUserInput) {
     return 'This action adds a new user';
   }

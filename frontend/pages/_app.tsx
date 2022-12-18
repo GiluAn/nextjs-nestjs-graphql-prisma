@@ -1,12 +1,23 @@
-import '../styles/globals.css';
-import { AppProps } from 'next/app';
+import { ApolloProvider } from '@apollo/client';
+import { Layout } from '@components/common';
 import GlobalStyles from '@components/GlobalStyle';
-import Modal from '@components/common/Modal/Modal';
+import client from '@graphql/client';
+import { AppProps } from 'next/app';
+import Head from 'next/head';
+import '../styles/globals.css';
 
 export default function App({ Component, pageProps }: AppProps) {
-  <GlobalStyles />;
-  // <Modal onClose={() => console.log('close')}>
-  //   <>TEST</>
-  // </Modal>;
-  return <Component {...pageProps} />;
+  return (
+    <>
+      <Head>
+        <title>TEST</title>
+      </Head>
+      {/* <GlobalStyles /> */}
+      <ApolloProvider client={client}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ApolloProvider>
+    </>
+  );
 }
