@@ -12,7 +12,7 @@ const CustomStyles = createGlobalStyle`
 const GlobalStyles = () => (
   <>
     <BaseStyles />
-    <CustomStyles />
+    {/* <CustomStyles /> */}
   </>
 );
 

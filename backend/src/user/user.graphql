@@ -3,7 +3,13 @@ type User {
   userId: String!
   password: String!
   name: String!
+  salt: String!
 }
+
+input SignInInput {
+    userId: String!
+    password: String!
+  }
 
 input CreateUserInput {
   userId: String!
@@ -24,6 +30,7 @@ type Query {
 }
 
 type Mutation {
+  signIn(signInInput: SignInInput!): User!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User
