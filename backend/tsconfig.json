@@ -20,6 +20,7 @@
     "paths": {
       "@lib": ["src/lib"],
       "@environments": ["src/environments"],
+      "@decorators": ["src/common/decorators"],
     }
   }
 }

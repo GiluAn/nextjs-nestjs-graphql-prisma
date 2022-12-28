@@ -20,7 +20,7 @@ export interface CreateUserInput {
 }
 
 export interface UpdateUserInput {
-    id: number;
+    id: string;
     userId: string;
     password: string;
     name: string;
@@ -36,14 +36,13 @@ export interface User {
 
 export interface IQuery {
     users(): Nullable<User>[] | Promise<Nullable<User>[]>;
-    user(id: number): Nullable<User> | Promise<Nullable<User>>;
+    user(id: string): Nullable<User> | Promise<Nullable<User>>;
+    auth(): Nullable<User> | Promise<Nullable<User>>;
 }
 
 export interface IMutation {
     signIn(signInInput: SignInInput): User | Promise<User>;
-    createUser(createUserInput: CreateUserInput): User | Promise<User>;
-    updateUser(updateUserInput: UpdateUserInput): User | Promise<User>;
-    removeUser(id: number): Nullable<User> | Promise<Nullable<User>>;
+    signOut(): boolean | Promise<boolean>;
 }
 
 type Nullable<T> = T | null;
