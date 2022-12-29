@@ -1,12 +1,17 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import Button from '@components/common/Button';
+import { AuthState, useAuth } from 'lib/providers/AuthProvider';
 
 interface NavbarProps {
   openLoginModal: () => void;
 }
 
 const Navbar = ({ openLoginModal }: NavbarProps) => {
+  const { state, signOut } = useAuth();
+  if (state.isLoading) {
+    return <></>;
+  }
   return (
     <nav className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900">
       <div className="container flex flex-wrap items-center justify-between mx-auto">
@@ -17,7 +22,24 @@ const Navbar = ({ openLoginModal }: NavbarProps) => {
           </span>
         </Link>
         <div className="flex items-center md:order-2">
-          <Button onClick={openLoginModal}>로그인</Button>
+          {state.authenticated ? (
+            <button
+              type="button"
+              className="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+              id="user-menu-button"
+              aria-expanded="false"
+              data-dropdown-toggle="user-dropdown"
+              data-dropdown-placement="bottom"
+              onClick={() => signOut()}
+            >
+              <span className="sr-only">Open user menu</span>
+              <div className="w-8 h-8 flex rounded-full bg-purple-400 content-center items-center justify-center">
+                <div>U</div>
+              </div>
+            </button>
+          ) : (
+            <Button onClick={openLoginModal}>로그인</Button>
+          )}
           {/* <button
             type="button"
             className="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"

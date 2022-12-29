@@ -1,6 +1,6 @@
 import { LoginModal } from '@components/auth';
 import { Navbar } from '@components/common';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -8,14 +8,13 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const [visibleLoginModal, setVisibleLoginModal] = useState(false);
-
-  const openLoginModal = () => {
+  const openLoginModal = useCallback(() => {
     setVisibleLoginModal(true);
-  };
+  }, []);
 
-  const closeLoginModal = () => {
+  const closeLoginModal = useCallback(() => {
     setVisibleLoginModal(false);
-  };
+  }, []);
 
   return (
     <>
