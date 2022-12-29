@@ -21,10 +21,7 @@ import { UserModule } from './user/user.module';
         origin: true,
       },
       context: (context) => {
-        // console.log(context);
         return context;
-        // return context.req;
-        // console.log(req, connection);
       },
     }),
     PrismaModule,

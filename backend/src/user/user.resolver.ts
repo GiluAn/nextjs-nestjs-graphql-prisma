@@ -1,9 +1,12 @@
+import { NODE_ENV } from '@environments';
 import { UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
 import { AccessTokenGuard } from 'src/auth/guards/access-token.guard';
 import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
+import { JwtRefreshGuard } from 'src/auth/guards/refresh-token.guard';
+import { accessCookieOpsions, refreshCookieOpsions } from 'src/common/constants';
 import { AuthUser, GqlResopnse } from 'src/common/decorators';
 import { User } from 'src/graphql.schema';
 import { UserService } from './user.service';
@@ -22,7 +25,6 @@ export class UserResolver {
 
   @Query('user')
   getUser(@Context() context: any, @Args('id') id: string) {
-    console.log(context.req?.headers?.cookie);
     return this.userService.findOne(id);
   }
 
@@ -30,38 +32,34 @@ export class UserResolver {
   @Query('auth')
   async auth(@Context() context: any) {
     const { id } = context.req.user;
-    console.log(context.req.user);
+
     return this.userService.findOne(id);
   }
 
   @UseGuards(LocalAuthGuard)
   @Mutation('signIn')
   async signIn(@GqlResopnse() res: Response, @AuthUser() authUser: User) {
-    console.log('authUser', authUser);
     const { accessToken, refreshToken } = await this.authService.signIn(authUser);
-    res.cookie('access-token', accessToken, {
-      httpOnly: true,
-      maxAge: 60 * 1 * 1000, // 1hour
-      expires: new Date(Date.now() + 60 * 60 * 1000 * 24 * 8 * 1000),
-      // secure: process.env.NODE_ENV === 'production',
-      path: '/',
-      // sameSite: 'lax',
-    });
-    res.cookie('refresh-token', refreshToken, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 8, // 8d
-      expires: new Date(Date.now() + 60 * 60 * 24 * 8 * 1000),
-      // secure: process.env.NODE_ENV === 'production',
-      path: '/',
-      // sameSite: 'lax',
-    });
+    res.cookie('access-token', accessToken, accessCookieOpsions);
+    res.cookie('refresh-token', refreshToken, refreshCookieOpsions);
 
     return authUser;
   }
 
+  @UseGuards(JwtRefreshGuard)
+  @Mutation('refreshToken')
+  async refresh(@GqlResopnse() res: Response, @AuthUser() authUser: User) {
+    const accessToken = this.authService.refreshAccessToken(authUser);
+    res.cookie('access-token', accessToken, accessCookieOpsions);
+
+    return true;
+  }
+
   @Mutation('signOut')
-  async signOut(@Context() context: any) {
-    // removeTokenCookie(context);
+  async signOut(@GqlResopnse() res: Response) {
+    res.cookie('access-token', '', { maxAge: -1, path: '/' });
+    res.cookie('refresh-token', '', { maxAge: -1, path: '/' });
+
     return true;
   }
 }

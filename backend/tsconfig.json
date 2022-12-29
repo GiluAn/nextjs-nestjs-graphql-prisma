@@ -21,6 +21,7 @@
       "@lib": ["src/lib"],
       "@environments": ["src/environments"],
       "@decorators": ["src/common/decorators"],
+      "@constants": ["src/common/constants"],
     }
   }
 }

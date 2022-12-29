@@ -1,20 +1,34 @@
-import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Request } from 'express';
+import { REFRESH_TOKEN_SECRET } from '@environments';
 import { Injectable } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { parse } from 'cookie';
+import { Strategy } from 'passport-jwt';
+
+type JwtPayload = {
+  sub: string;
+  name: string;
+};
+
+const fromAuthHeaderAsCookie = function () {
+  return function (request: any) {
+    const cookie = request.cookies ? request.cookies : request.headers?.cookie;
+    const token = parse(cookie || '');
+
+    return token['refresh-token'];
+  };
+};
 
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_REFRESH_SECRET,
-      passReqToCallback: true,
+      jwtFromRequest: fromAuthHeaderAsCookie(),
+      ignoreExpiration: false,
+      secretOrKey: REFRESH_TOKEN_SECRET,
     });
   }
 
-  validate(req: Request, payload: any) {
-    const refreshToken = req.get('Authorization').replace('Bearer', '').trim();
-    return { ...payload, refreshToken };
+  validate(payload: JwtPayload) {
+    return { id: payload.sub, name: payload.name };
   }
 }
