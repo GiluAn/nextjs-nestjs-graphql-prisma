@@ -8,18 +8,18 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   const [visibleLoginModal, setVisibleLoginModal] = useState(false);
-  const openLoginModal = useCallback(() => {
+  const openHandler = useCallback(() => {
     setVisibleLoginModal(true);
   }, []);
 
-  const closeLoginModal = useCallback(() => {
+  const closeHandler = useCallback(() => {
     setVisibleLoginModal(false);
   }, []);
 
   return (
     <>
-      <LoginModal visible={visibleLoginModal} closeModal={closeLoginModal} />
-      <Navbar openLoginModal={openLoginModal} />
+      <LoginModal visible={visibleLoginModal} onClose={closeHandler} />
+      <Navbar onOpen={openHandler} />
       {children}
     </>
   );

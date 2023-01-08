@@ -5,13 +5,13 @@ import LoginForm from './Form/LoginForm';
 
 interface LoginModalProps {
   visible: boolean;
-  closeModal: () => void;
+  onClose: () => void;
 }
 
-const LoginModal = ({ visible, closeModal }: LoginModalProps) => {
+const LoginModal = ({ visible, onClose }: LoginModalProps) => {
   return (
-    <Modal title="로그인" visible={visible} closeModal={closeModal}>
-      <LoginForm closeModal={closeModal} />
+    <Modal title="로그인" visible={visible} onClose={onClose}>
+      <LoginForm onClose={onClose} />
     </Modal>
   );
 };

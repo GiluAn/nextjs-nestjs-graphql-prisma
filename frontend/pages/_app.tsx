@@ -6,7 +6,10 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import '../styles/globals.css';
 
-export default function App({ Component, pageProps }: AppProps) {
+// export default function App({ Component, pageProps }: AppProps) {
+// console.log(pageProps);
+export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+  console.log(session);
   return (
     <>
       <Head>
@@ -22,4 +25,9 @@ export default function App({ Component, pageProps }: AppProps) {
       </ApolloProvider>
     </>
   );
+}
+
+export function getStaticProps() {
+  console.log('_app, getStaticProps');
+  return {};
 }

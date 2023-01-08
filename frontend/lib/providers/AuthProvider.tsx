@@ -34,17 +34,24 @@ const AuthContext = createContext<AuthContextType>({
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
+    case 'LOAD_USER':
+      return {
+        ...state,
+        isLoading: true,
+      };
     case 'LOAD_SUCCESS':
       return {
         ...state,
         authenticated: action.payload.authenticated,
         user: action.payload.user,
+        isLoading: false,
       };
     case 'LOAD_FAIL':
       return {
         ...state,
         authenticated: action.payload.authenticated,
         user: action.payload.user,
+        isLoading: false,
       };
     case 'SET_LOADING':
       return {
@@ -75,12 +82,12 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   });
 
   useEffect(() => {
-    userLoad();
+    loadUser();
   }, []);
 
-  const userLoad = async () => {
-    dispatch({ type: 'SET_LOADING', payload: { isLoading: true } });
+  const loadUser = async () => {
     try {
+      dispatch({ type: 'LOAD_USER' });
       const currentUser = await client.query({
         query: GET_CURRENT_USER,
         fetchPolicy: 'network-only',
@@ -95,24 +102,22 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         type: 'LOAD_FAIL',
         payload: { user: null, authenticated: false },
       });
-    } finally {
-      dispatch({ type: 'SET_LOADING', payload: { isLoading: false } });
     }
   };
 
   const signIn = async ({ userId, password }: { userId: String; password: String }) => {
-    try {
-      await client.mutate({
-        mutation: SIGN_IN,
-        variables: { input: { userId, password } },
-      });
-      userLoad();
-    } catch (e) {
-      dispatch({
-        type: 'LOAD_FAIL',
-        payload: { user: null, authenticated: false },
-      });
+    const result = await client.mutate({
+      mutation: SIGN_IN,
+      variables: { input: { userId, password } },
+    });
+
+    if (!result) {
+      return false;
     }
+
+    loadUser();
+
+    return true;
   };
 
   const signOut = async () => {

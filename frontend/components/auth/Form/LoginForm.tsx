@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { ApolloError, useMutation } from '@apollo/client';
 import { Button } from '@components/common';
 import TextInput from '@components/common/Form/TextInput';
 import { SIGN_IN } from 'lib/graphql/user';
@@ -6,10 +6,10 @@ import useFrom from 'lib/hooks/useForm';
 import { useAuth } from 'lib/providers/AuthProvider';
 
 interface LoginFormProps {
-  closeModal: () => void;
+  onClose: () => void;
 }
 
-const LoginForm = ({ closeModal }: LoginFormProps) => {
+const LoginForm = ({ onClose }: LoginFormProps) => {
   // const { onSingnIn } = useAuth();
   // const [signIn] = useMutation(SIGN_IN);
   const { signIn } = useAuth();
@@ -21,10 +21,23 @@ const LoginForm = ({ closeModal }: LoginFormProps) => {
   const onSubmit = async (e: React.SyntheticEvent<EventTarget>) => {
     e.preventDefault();
     try {
-      const { data } = await signIn(input);
-
-      closeModal();
-    } catch (e) {}
+      const result = await signIn(input);
+      console.log('TEST', result);
+      if (result) {
+        onClose();
+      }
+    } catch (e) {
+      let errorMessage = '로그인 실패하였습니다.';
+      if (e instanceof ApolloError) {
+        const unauthenticated = e.graphQLErrors.some(
+          (ge) => (ge.extensions as any)?.code === 'UNAUTHENTICATED'
+        );
+        if (unauthenticated) {
+          errorMessage = '로그인 정보가 없습니다.';
+        }
+      }
+      alert(errorMessage);
+    }
   };
 
   return (

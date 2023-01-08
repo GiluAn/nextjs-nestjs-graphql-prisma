@@ -13,10 +13,10 @@ interface ModalProps {
   title: string;
   children?: React.ReactNode;
   visible: boolean;
-  closeModal: () => void;
+  onClose: () => void;
 }
 
-const Modal = ({ title, children, visible, closeModal }: ModalProps) => {
+const Modal = ({ title, children, visible, onClose }: ModalProps) => {
   if (!visible) return null;
   return (
     <ModalWrapper tabIndex={-1} role="dialog" aria-modal={true}>
@@ -24,7 +24,7 @@ const Modal = ({ title, children, visible, closeModal }: ModalProps) => {
         <ModalContent>
           <ModalHeader>
             <ModalTitle>{title}</ModalTitle>
-            <IconButton onClick={closeModal}>
+            <IconButton onClick={onClose}>
               <CloseIcon />
             </IconButton>
           </ModalHeader>
