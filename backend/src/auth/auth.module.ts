@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { TokenService } from 'src/token/token.service';
 import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
 import { AccessTokenStrategy } from './strategies/access-token.strategy';
@@ -12,8 +13,9 @@ import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
   providers: [
     AuthService,
     UserService,
-    JwtService,
+    TokenService,
     LocalStrategy,
+    JwtService,
     AccessTokenStrategy,
     RefreshTokenStrategy,
   ],

@@ -21,7 +21,7 @@ export const refreshCookieOpsions: CookieOptions = {
 
 export const accessJwtOptions = {
   secret: ACCESS_TOKEN_SECRET,
-  expiresIn: '15m',
+  expiresIn: '30m',
 };
 export const refreshJwtOptions = {
   secret: REFRESH_TOKEN_SECRET,

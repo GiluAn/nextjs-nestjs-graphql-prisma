@@ -20,4 +20,17 @@ export class UserService {
       where: { id: id },
     });
   }
+
+  upsertRefreshToken(userId: string, token: string) {
+    return this.prisma.refreshToken.upsert({
+      create: {
+        userId: userId,
+        token: token,
+      },
+      update: {
+        token: token,
+      },
+      where: { userId: userId },
+    });
+  }
 }

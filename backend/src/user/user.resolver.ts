@@ -1,4 +1,3 @@
-import { NODE_ENV } from '@environments';
 import { UseGuards } from '@nestjs/common';
 import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Response } from 'express';
@@ -39,7 +38,7 @@ export class UserResolver {
   @UseGuards(LocalAuthGuard)
   @Mutation('signIn')
   async signIn(@GqlResopnse() res: Response, @AuthUser() authUser: User) {
-    const { accessToken, refreshToken } = await this.authService.signIn(authUser);
+    const { accessToken, refreshToken } = await this.authService.generateUserToken(authUser);
     res.cookie('access-token', accessToken, accessCookieOpsions);
     res.cookie('refresh-token', refreshToken, refreshCookieOpsions);
 
@@ -49,8 +48,9 @@ export class UserResolver {
   @UseGuards(JwtRefreshGuard)
   @Mutation('refreshToken')
   async refresh(@GqlResopnse() res: Response, @AuthUser() authUser: User) {
-    const accessToken = this.authService.refreshAccessToken(authUser);
+    const { accessToken, refreshToken } = await this.authService.generateUserToken(authUser);
     res.cookie('access-token', accessToken, accessCookieOpsions);
+    res.cookie('refresh-token', refreshToken, refreshCookieOpsions);
 
     return true;
   }

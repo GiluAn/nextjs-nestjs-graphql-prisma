@@ -1,17 +1,21 @@
-import { accessJwtOptions, refreshJwtOptions } from '@constants';
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { pbkdf2Sync } from 'crypto';
 import { User } from 'src/graphql.schema';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { TokenService } from 'src/token/token.service';
 import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService, private jwtService: JwtService) {}
+  constructor(
+    private prisma: PrismaService,
+    private userService: UserService,
+    private tokenService: TokenService
+  ) {}
 
   async validateUser(userId: string, password: string): Promise<any> {
     const user = await this.userService.findUser(userId);
-    const inputHash = pbkdf2Sync(password, user?.salt, 1000, 64, 'sha512').toString('hex');
+    const inputHash = pbkdf2Sync(password, user?.salt || '', 1000, 64, 'sha512').toString('hex');
     if (user && user.password === inputHash) {
       return user;
     }
@@ -19,19 +23,16 @@ export class AuthService {
     return null;
   }
 
-  async signIn(user: User) {
-    const payload = { name: user.name, sub: user.id };
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(payload, accessJwtOptions),
-      this.jwtService.signAsync(payload, refreshJwtOptions),
-    ]);
-
-    return { accessToken, refreshToken };
+  async validRefreshToken(userId: string, token: string): Promise<any> {
+    return this.prisma.refreshToken.findFirst({
+      where: { userId: userId, token: token },
+    });
   }
 
-  refreshAccessToken(user: User) {
-    const payload = { name: user.name, sub: user.id };
+  async generateUserToken(user: User) {
+    const accessToken = this.tokenService.generateAccessToken(user);
+    const refreshToken = await this.tokenService.generateRefreshToken(user);
 
-    return this.jwtService.sign(payload, accessJwtOptions);
+    return { accessToken, refreshToken };
   }
 }
